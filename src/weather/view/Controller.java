@@ -4,10 +4,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.DirectoryChooser;
 import weather.model.ProcessedStation;
 import weather.model.Station;
@@ -42,11 +41,36 @@ public class Controller implements Initializable {
     @FXML
     private Button testBtn;
 
+    @FXML
+    private TableView<ProcessedStation> dataTable;
+
+    @FXML
+    private TableColumn<ProcessedStation, String> nameColumn;
+
+    @FXML
+    private TableColumn<ProcessedStation, Integer> yearColumn;
+
+    @FXML
+    private TableColumn<ProcessedStation, Double> maxTempColumn;
+
+    @FXML
+    private TableColumn<ProcessedStation, Double> minTempColumn;
+
+    @FXML
+    private TableColumn<ProcessedStation, Integer> totalAirFrostColumn;
+
+    @FXML
+    private TableColumn<ProcessedStation, Double> totalRainfallColumn;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         selectFolderBtn.setOnAction(e -> importData());
-        importDataBtn.setOnAction(e -> readAllData());
-        testBtn.setOnAction(e -> dataProcess());
+        importDataBtn.setOnAction(e -> {
+            readAllData();
+            dataProcess();
+            displayData();
+        });
+//        testBtn.setOnAction(e -> dataProcess());
     }
 
     private void importData() {
@@ -111,9 +135,9 @@ public class Controller implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        for (Station station : stationData) {
-            System.out.println(station);
-        }
+//        for (Station station : stationData) {
+//            System.out.println(station);
+//        }
     }
 
     private void readAllData() {
@@ -153,10 +177,20 @@ public class Controller implements Initializable {
                     tempProcessedStation.addRainfall(stationData.get(i).rainfallProperty());
                 }
             }
-            for (ProcessedStation station : processedStationData) {
-                System.out.println(station);
-            }
+//            for (ProcessedStation station : processedStationData) {
+//                System.out.println(station);
+//            }
         }
+    }
+
+    private void displayData() {
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("stationName"));
+        yearColumn.setCellValueFactory(new PropertyValueFactory<>("year"));
+        maxTempColumn.setCellValueFactory(new PropertyValueFactory<>("maximumTemperature"));
+        minTempColumn.setCellValueFactory(new PropertyValueFactory<>("minimumTemperature"));
+        totalAirFrostColumn.setCellValueFactory(new PropertyValueFactory<>("airFrostDaySum"));
+        totalRainfallColumn.setCellValueFactory(new PropertyValueFactory<>("rainfallSum"));
+        dataTable.setItems(processedStationData);
     }
 
     private static String getFileNameNoEx(String filename) {

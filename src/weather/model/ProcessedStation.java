@@ -107,7 +107,7 @@ public class ProcessedStation {
 
     public void setMinimumTemperature() {
         List<Double> minArr = new ArrayList<>();
-        for (DoubleProperty minTemp : monthlyMaxTemperature) {
+        for (DoubleProperty minTemp : monthlyMinTemperature) {
             minArr.add(minTemp.get());
         }
         this.minimumTemperature.set(Collections.min(minArr));
@@ -158,6 +158,7 @@ public class ProcessedStation {
         for (DoubleProperty rainfall : monthlyRainfall) {
             totalRainfall += rainfall.get();
         }
+        totalRainfall = (double) Math.round(totalRainfall * 100) / 100;
         this.rainfallSum.set(totalRainfall);
     }
 
@@ -175,22 +176,6 @@ public class ProcessedStation {
 
     public void addRainfall(DoubleProperty rainfall) {
         this.monthlyRainfall.add(rainfall);
-    }
-
-    public void clearMaxTemp() {
-        this.monthlyMaxTemperature.clear();
-    }
-
-    public void clearMinTemp() {
-        this.monthlyMinTemperature.clear();
-    }
-
-    public void clearAirFrostDay() {
-        this.monthlyAirFrostDay.clear();
-    }
-
-    public void clearRainfall() {
-        this.monthlyRainfall.clear();
     }
 
 }

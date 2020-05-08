@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0"
-            prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            prefWidth="900.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="weather.view.Controller">
     <top>
         <MenuBar BorderPane.alignment="CENTER">
@@ -76,19 +76,20 @@
                                                 <Insets bottom="10.0" left="10.0"/>
                                             </VBox.margin>
                                         </Label>
-                                        <TableView>
+                                        <TableView fx:id="dataTable">
                                             <columns>
-                                                <TableColumn minWidth="-Infinity" prefWidth="250.0"
+                                                <TableColumn fx:id="nameColumn" minWidth="-Infinity" prefWidth="150.0"
                                                              text="Station Name"/>
-                                                <TableColumn minWidth="-Infinity" text="Year"/>
-                                                <TableColumn minWidth="-Infinity" prefWidth="110.0"
-                                                             text="Highest Mothly"/>
-                                                <TableColumn minWidth="-Infinity" prefWidth="110.0"
-                                                             text="Lowest Monthly"/>
-                                                <TableColumn minWidth="-Infinity" prefWidth="140.0"
-                                                             text="Total Air Frost Days"/>
-                                                <TableColumn minWidth="-Infinity" prefWidth="110.0"
-                                                             text="Total Rainfall"/>
+                                                <TableColumn fx:id="yearColumn" minWidth="-Infinity" prefWidth="150.0"
+                                                             text="Year"/>
+                                                <TableColumn fx:id="maxTempColumn" minWidth="-Infinity"
+                                                             prefWidth="150.0" text="Highest Mothly"/>
+                                                <TableColumn fx:id="minTempColumn" minWidth="-Infinity"
+                                                             prefWidth="150.0" text="Lowest Monthly"/>
+                                                <TableColumn fx:id="totalAirFrostColumn" minWidth="-Infinity"
+                                                             prefWidth="150.0" text="Total Air Frost Days"/>
+                                                <TableColumn fx:id="totalRainfallColumn" minWidth="-Infinity"
+                                                             prefWidth="150.0" text="Total Rainfall"/>
                                             </columns>
                                         </TableView>
                                     </children>
