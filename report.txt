@@ -1,0 +1,306 @@
+***************************
+Number: 1
+Station: Aberporth
+Highest Temperature: 20.7 degrees on 7/2015
+Lowest Temperature: -0.1 degrees on 12/2012
+Average annual air frost days: 16 days
+Average annual rainfall: 933.48 mm
+***************************
+
+***************************
+Number: 2
+Station: Armagh
+Highest Temperature: 23.1 degrees on 7/2015
+Lowest Temperature: -3.8 degrees on 12/2012
+Average annual air frost days: 40 days
+Average annual rainfall: 855.66 mm
+***************************
+
+***************************
+Number: 3
+Station: Ballypatrick Forest
+Highest Temperature: 19.6 degrees on 7/2015
+Lowest Temperature: -0.3 degrees on 12/2012
+Average annual air frost days: 23 days
+Average annual rainfall: 1415.91 mm
+***************************
+
+***************************
+Number: 4
+Station: Bradford
+Highest Temperature: 23.1 degrees on 7/2015
+Lowest Temperature: -3.7 degrees on 12/2012
+Average annual air frost days: 39 days
+Average annual rainfall: 878.27 mm
+***************************
+
+***************************
+Number: 5
+Station: Braemar
+Highest Temperature: 21.9 degrees on 7/2015
+Lowest Temperature: -8.1 degrees on 12/2012
+Average annual air frost days: 107 days
+Average annual rainfall: 938.53 mm
+***************************
+
+***************************
+Number: 6
+Station: Camborne
+Highest Temperature: 20.8 degrees on 7/2015
+Lowest Temperature: 1.4 degrees on 12/2012
+Average annual air frost days: 9 days
+Average annual rainfall: 1085.88 mm
+***************************
+
+***************************
+Number: 7
+Station: Cambridge NIAB
+Highest Temperature: 25.1 degrees on 7/2015
+Lowest Temperature: -2.7 degrees on 12/2012
+Average annual air frost days: 39 days
+Average annual rainfall: 536.16 mm
+***************************
+
+***************************
+Number: 8
+Station: Cardiff Bute Park
+Highest Temperature: 25.0 degrees on 7/2015
+Lowest Temperature: -3.4 degrees on 12/2012
+Average annual air frost days: 37 days
+Average annual rainfall: 1170.36 mm
+***************************
+
+***************************
+Number: 9
+Station: Chivenor
+Highest Temperature: 23.4 degrees on 7/2015
+Lowest Temperature: -2.5 degrees on 12/2012
+Average annual air frost days: 21 days
+Average annual rainfall: 966.61 mm
+***************************
+
+***************************
+Number: 10
+Station: Cwmystwyth
+Highest Temperature: 18.8 degrees on 6/2012
+Lowest Temperature: -3.7 degrees on 12/2012
+Average annual air frost days: 21 days
+Average annual rainfall: 390.09 mm
+***************************
+
+***************************
+Number: 11
+Station: Dunstaffnage
+Highest Temperature: 20.3 degrees on 7/2015
+Lowest Temperature: -2.1 degrees on 12/2012
+Average annual air frost days: 28 days
+Average annual rainfall: 1766.29 mm
+***************************
+
+***************************
+Number: 12
+Station: Eastbourne
+Highest Temperature: 22.5 degrees on 7/2015
+Lowest Temperature: -0.5 degrees on 12/2012
+Average annual air frost days: 16 days
+Average annual rainfall: 795.44 mm
+***************************
+
+***************************
+Number: 13
+Station: Eskdalemuir
+Highest Temperature: 21.4 degrees on 7/2015
+Lowest Temperature: -6.8 degrees on 12/2012
+Average annual air frost days: 83 days
+Average annual rainfall: 1936.67 mm
+***************************
+
+***************************
+Number: 14
+Station: Heathrow
+Highest Temperature: 27.0 degrees on 7/2015
+Lowest Temperature: -1.5 degrees on 12/2012
+Average annual air frost days: 28 days
+Average annual rainfall: 619.1 mm
+***************************
+
+***************************
+Number: 15
+Station: Hurn
+Highest Temperature: 25.4 degrees on 7/2015
+Lowest Temperature: -3.4 degrees on 12/2012
+Average annual air frost days: 55 days
+Average annual rainfall: 896.66 mm
+***************************
+
+***************************
+Number: 16
+Station: Lerwick
+Highest Temperature: 15.6 degrees on 7/2011
+Lowest Temperature: -1.2 degrees on 12/2012
+Average annual air frost days: 27 days
+Average annual rainfall: 1276.18 mm
+***************************
+
+***************************
+Number: 17
+Station: Leuchars
+Highest Temperature: 21.4 degrees on 7/2015
+Lowest Temperature: -4.1 degrees on 12/2012
+Average annual air frost days: 56 days
+Average annual rainfall: 748.42 mm
+***************************
+
+***************************
+Number: 18
+Station: Lowestoft
+Highest Temperature: 23.6 degrees on 7/2012
+Lowest Temperature: -1.4 degrees on 12/2012
+Average annual air frost days: 29 days
+Average annual rainfall: 620.54 mm
+***************************
+
+***************************
+Number: 19
+Station: Manston
+Highest Temperature: 23.8 degrees on 8/2011
+Lowest Temperature: -1.0 degrees on 12/2012
+Average annual air frost days: 22 days
+Average annual rainfall: 640.09 mm
+***************************
+
+***************************
+Number: 20
+Station: Nairn
+Highest Temperature: 21.8 degrees on 7/2015
+Lowest Temperature: -3.7 degrees on 12/2012
+Average annual air frost days: 53 days
+Average annual rainfall: 679.0 mm
+***************************
+
+***************************
+Number: 21
+Station: Newton Rigg
+Highest Temperature: 22.5 degrees on 7/2015
+Lowest Temperature: -7.0 degrees on 12/2012
+Average annual air frost days: 63 days
+Average annual rainfall: 996.74 mm
+***************************
+
+***************************
+Number: 22
+Station: Oxford
+Highest Temperature: 25.5 degrees on 7/2015
+Lowest Temperature: -2.2 degrees on 12/2012
+Average annual air frost days: 34 days
+Average annual rainfall: 662.04 mm
+***************************
+
+***************************
+Number: 23
+Station: Paisley
+Highest Temperature: 22.4 degrees on 7/2015
+Lowest Temperature: -4.4 degrees on 12/2012
+Average annual air frost days: 42 days
+Average annual rainfall: 1277.59 mm
+***************************
+
+***************************
+Number: 24
+Station: Ross-on-Wye
+Highest Temperature: 25.5 degrees on 7/2015
+Lowest Temperature: -4.3 degrees on 12/2012
+Average annual air frost days: 41 days
+Average annual rainfall: 750.71 mm
+***************************
+
+***************************
+Number: 25
+Station: Shawbury
+Highest Temperature: 24.1 degrees on 7/2015
+Lowest Temperature: -5.8 degrees on 12/2012
+Average annual air frost days: 56 days
+Average annual rainfall: 669.73 mm
+***************************
+
+***************************
+Number: 26
+Station: Sheffield
+Highest Temperature: 24.0 degrees on 7/2015
+Lowest Temperature: -1.9 degrees on 12/2012
+Average annual air frost days: 26 days
+Average annual rainfall: 789.27 mm
+***************************
+
+***************************
+Number: 27
+Station: Stornoway Airport
+Highest Temperature: 18.2 degrees on 7/2016
+Lowest Temperature: -0.7 degrees on 12/2012
+Average annual air frost days: 23 days
+Average annual rainfall: 1233.39 mm
+***************************
+
+***************************
+Number: 28
+Station: Sutton Bonington
+Highest Temperature: 24.3 degrees on 7/2015
+Lowest Temperature: -4.0 degrees on 12/2012
+Average annual air frost days: 41 days
+Average annual rainfall: 601.77 mm
+***************************
+
+***************************
+Number: 29
+Station: Tiree
+Highest Temperature: 17.7 degrees on 7/2015
+Lowest Temperature: 0.3 degrees on 12/2012
+Average annual air frost days: 10 days
+Average annual rainfall: 1329.63 mm
+***************************
+
+***************************
+Number: 30
+Station: Valley
+Highest Temperature: 21.6 degrees on 7/2015
+Lowest Temperature: -0.9 degrees on 12/2012
+Average annual air frost days: 19 days
+Average annual rainfall: 875.47 mm
+***************************
+
+***************************
+Number: 31
+Station: Waddington
+Highest Temperature: 23.4 degrees on 7/2015
+Lowest Temperature: -3.3 degrees on 12/2012
+Average annual air frost days: 36 days
+Average annual rainfall: 596.23 mm
+***************************
+
+***************************
+Number: 32
+Station: Whitby
+Highest Temperature: 22.4 degrees on 7/2015
+Lowest Temperature: -2.2 degrees on 12/2012
+Average annual air frost days: 31 days
+Average annual rainfall: 752.67 mm
+***************************
+
+***************************
+Number: 33
+Station: Wick Airport
+Highest Temperature: 18.2 degrees on 7/2015
+Lowest Temperature: -2.9 degrees on 12/2012
+Average annual air frost days: 36 days
+Average annual rainfall: 791.81 mm
+***************************
+
+***************************
+Number: 34
+Station: Yeovilton
+Highest Temperature: 25.3 degrees on 7/2015
+Lowest Temperature: -4.5 degrees on 12/2012
+Average annual air frost days: 50 days
+Average annual rainfall: 707.94 mm
+***************************
+

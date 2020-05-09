@@ -2,22 +2,16 @@ package weather.model;
 
 import javafx.beans.property.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 /**
  * @author Tian Z
  */
 public class ProcessedStation {
     private StringProperty stationName = new SimpleStringProperty(this, "Station Name", "");
     private IntegerProperty year = new SimpleIntegerProperty(this, "Year", 0);
-    private List<DoubleProperty> monthlyMaxTemperature = new ArrayList<>();
-    private List<DoubleProperty> monthlyMinTemperature = new ArrayList<>();
+    private final IntegerProperty maxTempMonth = new SimpleIntegerProperty(this, "Maximum Temperature Month", 1);
+    private final IntegerProperty minTempMonth = new SimpleIntegerProperty(this, "Minimum Temperature Month", 1);
     private final DoubleProperty maximumTemperature = new SimpleDoubleProperty(this, "Maximum Temperature", 0);
     private final DoubleProperty minimumTemperature = new SimpleDoubleProperty(this, "Minimum Temperature", 0);
-    private List<IntegerProperty> monthlyAirFrostDay = new ArrayList<>();
-    private List<DoubleProperty> monthlyRainfall = new ArrayList<>();
     private final IntegerProperty airFrostDaySum = new SimpleIntegerProperty(this, "Air Frost Day Sum", 0);
     private final DoubleProperty rainfallSum = new SimpleDoubleProperty(this, "Rainfall Sum", 0);
 
@@ -65,20 +59,28 @@ public class ProcessedStation {
         this.year.set(year);
     }
 
-    public List<DoubleProperty> getMonthlyMaxTemperature() {
-        return monthlyMaxTemperature;
+    public int getMaxTempMonth() {
+        return maxTempMonth.get();
     }
 
-    public void setMonthlyMaxTemperature(List<DoubleProperty> monthlyMaxTemperature) {
-        this.monthlyMaxTemperature = monthlyMaxTemperature;
+    public IntegerProperty maxTempMonthProperty() {
+        return maxTempMonth;
     }
 
-    public List<DoubleProperty> getMonthlyMinTemperature() {
-        return monthlyMinTemperature;
+    public void setMaxTempMonth(int maxTempMonth) {
+        this.maxTempMonth.set(maxTempMonth);
     }
 
-    public void setMonthlyMinTemperature(List<DoubleProperty> monthlyMinTemperature) {
-        this.monthlyMinTemperature = monthlyMinTemperature;
+    public int getMinTempMonth() {
+        return minTempMonth.get();
+    }
+
+    public IntegerProperty minTempMonthProperty() {
+        return minTempMonth;
+    }
+
+    public void setMinTempMonth(int minTempMonth) {
+        this.minTempMonth.set(minTempMonth);
     }
 
     public double getMaximumTemperature() {
@@ -89,12 +91,8 @@ public class ProcessedStation {
         return maximumTemperature;
     }
 
-    public void setMaximumTemperature() {
-        List<Double> maxArr = new ArrayList<>();
-        for (DoubleProperty maxTemp : monthlyMaxTemperature) {
-            maxArr.add(maxTemp.get());
-        }
-        this.maximumTemperature.set(Collections.max(maxArr));
+    public void setMaximumTemperature(double maximumTemperature) {
+        this.maximumTemperature.set(maximumTemperature);
     }
 
     public double getMinimumTemperature() {
@@ -105,28 +103,8 @@ public class ProcessedStation {
         return minimumTemperature;
     }
 
-    public void setMinimumTemperature() {
-        List<Double> minArr = new ArrayList<>();
-        for (DoubleProperty minTemp : monthlyMinTemperature) {
-            minArr.add(minTemp.get());
-        }
-        this.minimumTemperature.set(Collections.min(minArr));
-    }
-
-    public List<IntegerProperty> getMonthlyAirFrostDay() {
-        return monthlyAirFrostDay;
-    }
-
-    public void setMonthlyAirFrostDay(List<IntegerProperty> monthlyAirFrostDay) {
-        this.monthlyAirFrostDay = monthlyAirFrostDay;
-    }
-
-    public List<DoubleProperty> getMonthlyRainfall() {
-        return monthlyRainfall;
-    }
-
-    public void setMonthlyRainfall(List<DoubleProperty> monthlyRainfall) {
-        this.monthlyRainfall = monthlyRainfall;
+    public void setMinimumTemperature(double minimumTemperature) {
+        this.minimumTemperature.set(minimumTemperature);
     }
 
     public int getAirFrostDaySum() {
@@ -137,12 +115,8 @@ public class ProcessedStation {
         return airFrostDaySum;
     }
 
-    public void setAirFrostDaySum() {
-        int totalAirFrostDay = 0;
-        for (IntegerProperty day : monthlyAirFrostDay) {
-            totalAirFrostDay += day.get();
-        }
-        this.airFrostDaySum.set(totalAirFrostDay);
+    public void setAirFrostDaySum(int airFrostDaySum) {
+        this.airFrostDaySum.set(airFrostDaySum);
     }
 
     public double getRainfallSum() {
@@ -153,29 +127,8 @@ public class ProcessedStation {
         return rainfallSum;
     }
 
-    public void setRainfallSum() {
-        double totalRainfall = 0.0;
-        for (DoubleProperty rainfall : monthlyRainfall) {
-            totalRainfall += rainfall.get();
-        }
-        totalRainfall = (double) Math.round(totalRainfall * 100) / 100;
-        this.rainfallSum.set(totalRainfall);
+    public void setRainfallSum(double rainfallSum) {
+        double rainfall = (double) Math.round(rainfallSum * 100) / 100;
+        this.rainfallSum.set(rainfall);
     }
-
-    public void addMaxTemp(DoubleProperty maxTemp) {
-        this.monthlyMaxTemperature.add(maxTemp);
-    }
-
-    public void addMinTemp(DoubleProperty minTemp) {
-        this.monthlyMinTemperature.add(minTemp);
-    }
-
-    public void addAirFrostDay(IntegerProperty airFrostDay) {
-        this.monthlyAirFrostDay.add(airFrostDay);
-    }
-
-    public void addRainfall(DoubleProperty rainfall) {
-        this.monthlyRainfall.add(rainfall);
-    }
-
 }

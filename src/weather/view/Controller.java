@@ -10,11 +10,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.DirectoryChooser;
 import weather.model.ProcessedStation;
 import weather.model.Station;
+import weather.model.StationOverview;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -26,6 +24,7 @@ import java.util.ResourceBundle;
 public class Controller implements Initializable {
     private final ObservableList<Station> stationData = FXCollections.observableArrayList();
     private final ObservableList<ProcessedStation> processedStationData = FXCollections.observableArrayList();
+    private final ObservableList<StationOverview> overviewStationData = FXCollections.observableArrayList();
 
     private File selectedDirectory;
 
@@ -70,8 +69,14 @@ public class Controller implements Initializable {
             dataProcess();
             displayData();
         });
-//        testBtn.setOnAction(e -> dataProcess());
+        testBtn.setOnAction(e -> {
+            getStatistics();
+            generateReport();
+        });
     }
+
+
+//    **************** Import Data File ************************
 
     private void importData() {
         DirectoryChooser directoryChooser = new DirectoryChooser();
@@ -80,6 +85,10 @@ public class Controller implements Initializable {
         selectedDirectory = directoryChooser.showDialog(selectFolderBtn.getScene().getWindow());
         directoryChosen.setText("Directory Chosen: " + selectedDirectory.getAbsolutePath());
     }
+
+//    **************** End Import Data File ************************
+
+//    **************** Process & Display Data ************************
 
     private ArrayList<File> validateData() {
         if (selectedDirectory == null) {
@@ -93,6 +102,7 @@ public class Controller implements Initializable {
         ArrayList<File> dataFiles = new ArrayList<>();
         File[] fileArr = selectedDirectory.listFiles();
         assert fileArr != null;
+        System.out.println("fileArr : " + fileArr.length);
         if (fileArr.length > 0) {
             for (int i = 0; i < Objects.requireNonNull(fileArr).length; i++) {
                 File file = fileArr[i];
@@ -153,33 +163,59 @@ public class Controller implements Initializable {
         if (!stationData.isEmpty()) {
             String tempName = stationData.get(0).getStationName();
             int tempYear = stationData.get(0).getYear();
+            int tempHighestMonth = stationData.get(0).getMonth();
+            int tempLowestMonth = stationData.get(0).getMonth();
+            double tempHighest = stationData.get(0).getMaximumTemperature();
+            double tempLowest = stationData.get(0).getMinimumTemperature();
+            int airFrostDay = 0;
+            double rainfall = 0;
             ProcessedStation tempProcessedStation = new ProcessedStation(tempName, tempYear);
-            for (int i = 0; i < stationData.size(); i++) {
-                if ((stationData.get(i).getStationName().equals(tempName)) && (stationData.get(i).getYear() == tempYear)) {
-                    tempProcessedStation.addMaxTemp(stationData.get(i).maximumTemperatureProperty());
-                    tempProcessedStation.addMinTemp(stationData.get(i).minimumTemperatureProperty());
-                    tempProcessedStation.addAirFrostDay(stationData.get(i).airFrostDayNumProperty());
-                    tempProcessedStation.addRainfall(stationData.get(i).rainfallProperty());
+            for (Station station : stationData) {
+                if ((station.getStationName().equals(tempName)) && (station.getYear() == tempYear)) {
+                    if (station.getMaximumTemperature() > tempHighest) {
+                        tempHighest = station.getMaximumTemperature();
+                        tempHighestMonth = station.getMonth();
+                    }
+                    if (station.getMinimumTemperature() < tempLowest) {
+                        tempLowest = station.getMinimumTemperature();
+                        tempLowestMonth = station.getMonth();
+                    }
+                    airFrostDay += station.getAirFrostDayNum();
+                    rainfall += station.getRainfall();
                 } else {
-                    tempProcessedStation.setMaximumTemperature();
-                    tempProcessedStation.setMinimumTemperature();
-                    tempProcessedStation.setAirFrostDaySum();
-                    tempProcessedStation.setRainfallSum();
+                    tempProcessedStation.setStationName(tempName);
+                    tempProcessedStation.setYear(tempYear);
+                    tempProcessedStation.setMaximumTemperature(tempHighest);
+                    tempProcessedStation.setMaxTempMonth(tempHighestMonth);
+                    tempProcessedStation.setMinimumTemperature(tempLowest);
+                    tempProcessedStation.setMinTempMonth(tempLowestMonth);
+                    tempProcessedStation.setAirFrostDaySum(airFrostDay);
+                    tempProcessedStation.setRainfallSum(rainfall);
                     processedStationData.add(tempProcessedStation);
-                    tempName = stationData.get(i).getStationName();
-                    tempYear = stationData.get(i).getYear();
-                    tempProcessedStation = new ProcessedStation(tempName, tempYear);
-                    tempProcessedStation.setStationName(stationData.get(i).getStationName());
-                    tempProcessedStation.setYear(stationData.get(i).getYear());
-                    tempProcessedStation.addMaxTemp(stationData.get(i).maximumTemperatureProperty());
-                    tempProcessedStation.addMinTemp(stationData.get(i).minimumTemperatureProperty());
-                    tempProcessedStation.addAirFrostDay(stationData.get(i).airFrostDayNumProperty());
-                    tempProcessedStation.addRainfall(stationData.get(i).rainfallProperty());
+                    tempProcessedStation = new ProcessedStation();
+                    tempName = station.getStationName();
+                    tempYear = station.getYear();
+                    tempHighest = station.getMaximumTemperature();
+                    tempHighestMonth = station.getMonth();
+                    tempLowest = station.getMinimumTemperature();
+                    tempLowestMonth = station.getMonth();
+                    airFrostDay = station.getAirFrostDayNum();
+                    rainfall = station.getRainfall();
                 }
             }
+            tempProcessedStation.setStationName(tempName);
+            tempProcessedStation.setYear(tempYear);
+            tempProcessedStation.setMaximumTemperature(tempHighest);
+            tempProcessedStation.setMaxTempMonth(tempHighestMonth);
+            tempProcessedStation.setMinimumTemperature(tempLowest);
+            tempProcessedStation.setMinTempMonth(tempLowestMonth);
+            tempProcessedStation.setAirFrostDaySum(airFrostDay);
+            tempProcessedStation.setRainfallSum(rainfall);
+            processedStationData.add(tempProcessedStation);
 //            for (ProcessedStation station : processedStationData) {
 //                System.out.println(station);
 //            }
+            System.out.println(processedStationData.size());
         }
     }
 
@@ -203,5 +239,94 @@ public class Controller implements Initializable {
         return filename;
     }
 
+//    **************** End of Process & Display Data ************************
+
+    //    **************** Report Generator  ************************
+
+    public void getStatistics() {
+        if (!processedStationData.isEmpty()) {
+            String tempName = processedStationData.get(0).getStationName();
+            int tempHighestYear = processedStationData.get(0).getYear();
+            int tempLowestYear = processedStationData.get(0).getYear();
+            int tempHighestMonth = processedStationData.get(0).getMaxTempMonth();
+            int tempLowestMonth = processedStationData.get(0).getMinTempMonth();
+            double tempHighest = processedStationData.get(0).getMaximumTemperature();
+            double tempLowest = processedStationData.get(0).getMinimumTemperature();
+            int airFrostDay = 0;
+            double rainfall = 0;
+            StationOverview tempStationOverview = new StationOverview(tempName);
+            for (ProcessedStation processedStation : processedStationData) {
+                if (processedStation.getStationName().equals(tempName)) {
+                    if (processedStation.getMaximumTemperature() > tempHighest) {
+                        tempHighest = processedStation.getMaximumTemperature();
+                        tempHighestYear = processedStation.getYear();
+                        tempHighestMonth = processedStation.getMaxTempMonth();
+                    }
+                    if (processedStation.getMinimumTemperature() < tempLowest) {
+                        tempLowest = processedStation.getMinimumTemperature();
+                        tempLowestYear = processedStation.getYear();
+                        tempLowestMonth = processedStation.getMinTempMonth();
+                    }
+                    airFrostDay += processedStation.getAirFrostDaySum();
+                    rainfall += processedStation.getRainfallSum();
+                } else {
+                    tempStationOverview.setStationName(tempName);
+                    tempStationOverview.setHighestTemperature(tempHighest);
+                    tempStationOverview.setHighestYear(tempHighestYear);
+                    tempStationOverview.setHighestMonth(tempHighestMonth);
+                    tempStationOverview.setLowestTemperature(tempLowest);
+                    tempStationOverview.setLowestYear(tempLowestYear);
+                    tempStationOverview.setLowestMonth(tempLowestMonth);
+                    tempStationOverview.setAverageAirFrostDay(airFrostDay / 9);
+                    tempStationOverview.setAverageAnnualRainfall(rainfall / 9);
+                    overviewStationData.add(tempStationOverview);
+                    tempStationOverview = new StationOverview();
+                    tempName = processedStation.getStationName();
+                    tempHighestYear = processedStation.getYear();
+                    tempLowestYear = processedStation.getYear();
+                    tempHighestMonth = processedStation.getMaxTempMonth();
+                    tempLowestMonth = processedStation.getMinTempMonth();
+                    tempHighest = processedStation.getMaximumTemperature();
+                    tempLowest = processedStation.getMinimumTemperature();
+                    airFrostDay = processedStation.getAirFrostDaySum();
+                    rainfall = processedStation.getRainfallSum();
+                }
+            }
+            tempStationOverview.setStationName(tempName);
+            tempStationOverview.setHighestTemperature(tempHighest);
+            tempStationOverview.setHighestYear(tempHighestYear);
+            tempStationOverview.setHighestMonth(tempHighestMonth);
+            tempStationOverview.setLowestTemperature(tempLowest);
+            tempStationOverview.setLowestYear(tempLowestYear);
+            tempStationOverview.setLowestMonth(tempLowestMonth);
+            tempStationOverview.setAverageAirFrostDay(airFrostDay / 9);
+            tempStationOverview.setAverageAnnualRainfall(rainfall / 9);
+            overviewStationData.add(tempStationOverview);
+//            System.out.println(overviewStationData.size());
+        }
+    }
+
+    public void generateReport() {
+        try {
+            File report = new File("report.txt");
+            if (!report.exists()) {
+                report.createNewFile();
+            }
+            FileWriter fw = new FileWriter(report.getAbsolutePath());
+            BufferedWriter bw = new BufferedWriter(fw);
+            for (int i = 0; i < overviewStationData.size(); i++) {
+                bw.write("***************************\n");
+                bw.write("Number: " + (i + 1) + "\n");
+                bw.write(overviewStationData.get(i).toString());
+                bw.write("***************************\n\n");
+            }
+            bw.flush();
+            bw.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
 }

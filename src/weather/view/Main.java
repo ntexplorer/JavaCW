@@ -20,7 +20,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("MainLayout.fxml"));
-        primaryStage.setTitle("Hello World");
+        primaryStage.setTitle("CMT205 Weather Statistics Viewer");
         primaryStage.setScene(new Scene(root, 900, 500));
         primaryStage.show();
     }
