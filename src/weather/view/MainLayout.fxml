@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.*?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0"
@@ -58,7 +61,8 @@
                                                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                                                     </HBox.margin>
                                                 </Button>
-                                                <Button fx:id="testBtn" mnemonicParsing="false" text="TEST">
+                                                <Button fx:id="generateReportBtn" mnemonicParsing="false"
+                                                        text="Generate Report">
                                                     <HBox.margin>
                                                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                                                     </HBox.margin>
@@ -100,7 +104,97 @@
                 </Tab>
                 <Tab text="Detailed Informaition">
                     <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"/>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                            <children>
+                                <SplitPane dividerPositions="0.2182628062360802" layoutX="300.0" layoutY="131.0"
+                                           prefHeight="421.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0"
+                                           AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                           AnchorPane.topAnchor="0.0">
+                                    <items>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                            <children>
+                                                <VBox prefHeight="419.0" prefWidth="193.0" AnchorPane.bottomAnchor="0.0"
+                                                      AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                                      AnchorPane.topAnchor="0.0">
+                                                    <children>
+                                                        <Button fx:id="testBtn" mnemonicParsing="false" text="Button"/>
+                                                        <TreeView fx:id="dataTreeView" prefHeight="419.0"
+                                                                  prefWidth="193.0"/>
+                                                    </children>
+                                                </VBox>
+                                            </children>
+                                        </AnchorPane>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                            <children>
+                                                <VBox layoutX="166.0" layoutY="102.0" prefHeight="419.0"
+                                                      prefWidth="627.0" AnchorPane.bottomAnchor="0.0"
+                                                      AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                                      AnchorPane.topAnchor="0.0">
+                                                    <children>
+                                                        <HBox>
+                                                            <children>
+                                                                <Button fx:id="tMaxBtn" mnemonicParsing="false"
+                                                                        text="Maximum Temperature">
+                                                                    <HBox.margin>
+                                                                        <Insets bottom="10.0" left="10.0" right="10.0"
+                                                                                top="10.0"/>
+                                                                    </HBox.margin>
+                                                                    <padding>
+                                                                        <Insets bottom="5.0" left="5.0" right="5.0"
+                                                                                top="5.0"/>
+                                                                    </padding>
+                                                                </Button>
+                                                                <Button fx:id="tMinBtn" mnemonicParsing="false"
+                                                                        text="Minimum Temperature">
+                                                                    <padding>
+                                                                        <Insets bottom="5.0" left="5.0" right="5.0"
+                                                                                top="5.0"/>
+                                                                    </padding>
+                                                                    <HBox.margin>
+                                                                        <Insets bottom="10.0" left="10.0" right="10.0"
+                                                                                top="10.0"/>
+                                                                    </HBox.margin>
+                                                                </Button>
+                                                                <Button fx:id="airFrostBtn" mnemonicParsing="false"
+                                                                        text="Air Frost Days">
+                                                                    <padding>
+                                                                        <Insets bottom="5.0" left="5.0" right="5.0"
+                                                                                top="5.0"/>
+                                                                    </padding>
+                                                                    <HBox.margin>
+                                                                        <Insets bottom="10.0" left="10.0" right="10.0"
+                                                                                top="10.0"/>
+                                                                    </HBox.margin>
+                                                                </Button>
+                                                                <Button fx:id="rainfallBtn" mnemonicParsing="false"
+                                                                        text="Rainfall">
+                                                                    <padding>
+                                                                        <Insets bottom="5.0" left="5.0" right="5.0"
+                                                                                top="5.0"/>
+                                                                    </padding>
+                                                                    <HBox.margin>
+                                                                        <Insets bottom="10.0" left="10.0" right="10.0"
+                                                                                top="10.0"/>
+                                                                    </HBox.margin>
+                                                                </Button>
+                                                            </children>
+                                                        </HBox>
+                                                        <BarChart>
+                                                            <xAxis>
+                                                                <CategoryAxis side="BOTTOM"/>
+                                                            </xAxis>
+                                                            <yAxis>
+                                                                <NumberAxis side="LEFT"/>
+                                                            </yAxis>
+                                                        </BarChart>
+                                                    </children>
+                                                </VBox>
+                                            </children>
+                                        </AnchorPane>
+                                    </items>
+                                </SplitPane>
+                            </children>
+                        </AnchorPane>
                     </content>
                 </Tab>
             </tabs>

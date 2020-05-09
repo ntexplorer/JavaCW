@@ -38,7 +38,28 @@ public class Controller implements Initializable {
     private Button importDataBtn;
 
     @FXML
+    private Button generateReportBtn;
+
+    @FXML
+    private Button bottomLabel;
+
+    @FXML
+    private Button tMaxBtn;
+
+    @FXML
+    private Button tMinBtn;
+
+    @FXML
+    private Button airFrostBtn;
+
+    @FXML
+    private Button rainfallBtn;
+
+    @FXML
     private Button testBtn;
+
+    @FXML
+    private TreeView<String> dataTreeView;
 
     @FXML
     private TableView<ProcessedStation> dataTable;
@@ -69,9 +90,13 @@ public class Controller implements Initializable {
             dataProcess();
             displayData();
         });
-        testBtn.setOnAction(e -> {
+        generateReportBtn.setOnAction(e -> {
             getStatistics();
             generateReport();
+        });
+
+        testBtn.setOnAction(e -> {
+            showTreeData();
         });
     }
 
@@ -113,12 +138,29 @@ public class Controller implements Initializable {
         } else {
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Error");
-            alert.setHeaderText("No Data File Found");
+            alert.setHeaderText("Empty directory");
             alert.setContentText("Empty directory selected, please try again.");
             alert.showAndWait();
+            directoryChosen.setText("Directory Chosen: ");
             return null;
         }
-        return dataFiles;
+        if (dataFiles.size() > 0) {
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Success");
+            alert.setHeaderText("Data process done");
+            alert.setContentText("Data imported and displayed successfully!");
+            alert.showAndWait();
+            directoryChosen.setText("Directory Chosen: ");
+            return dataFiles;
+        } else {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("No Data File Found");
+            alert.setContentText("No csv file in the selected directory, please try again.");
+            alert.showAndWait();
+            directoryChosen.setText("Directory Chosen: ");
+            return null;
+        }
     }
 
     private void readData(File file) {
@@ -239,7 +281,7 @@ public class Controller implements Initializable {
 
 //    **************** End of Process & Display Data ************************
 
-    //    **************** Report Generator  ************************
+//    **************** Report Generator  ************************
 
     public void getStatistics() {
         if (!processedStationData.isEmpty()) {
@@ -277,7 +319,6 @@ public class Controller implements Initializable {
                     tempStationOverview.setLowestTemperature(tempLowest);
                     tempStationOverview.setLowestYear(tempLowestYear);
                     tempStationOverview.setLowestMonth(tempLowestMonth);
-                    int a = airFrostDay / monthCount * 12;
                     tempStationOverview.setAverageAirFrostDay(airFrostDay * 12 / monthCount);
                     tempStationOverview.setAverageAnnualRainfall(rainfall * 12 / monthCount);
                     overviewStationData.add(tempStationOverview);
@@ -324,6 +365,11 @@ public class Controller implements Initializable {
             }
             bw.flush();
             bw.close();
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Success");
+            alert.setHeaderText("Report Generated");
+            alert.setContentText("Report generated successfully!");
+            alert.showAndWait();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -331,4 +377,40 @@ public class Controller implements Initializable {
 
     }
 
+//    **************** End of Report Generator  ************************
+
+
+//    **************** Tree View  ************************
+
+    public void showTreeData() {
+        if (!processedStationData.isEmpty()) {
+            TreeItem<String> root = new TreeItem<>("Station");
+            root.setExpanded(true);
+            String tempName = processedStationData.get(0).getStationName();
+            TreeItem<String> stationItem = new TreeItem<>(tempName);
+            stationItem.setExpanded(true);
+            root.getChildren().add(stationItem);
+            for (ProcessedStation station : processedStationData) {
+                if (!tempName.equals(station.getStationName())) {
+                    tempName = station.getStationName();
+                    stationItem = makeBranch(tempName, root);
+                }
+                makeBranch(Integer.toString(station.getYear()), stationItem);
+            }
+            dataTreeView = new TreeView<>(root);
+//            dataTreeView.setShowRoot(false);
+        }
+    }
+
+    public TreeItem<String> makeBranch(String itemName, TreeItem<String> parent) {
+        TreeItem<String> item = new TreeItem<>(itemName);
+        item.setExpanded(true);
+        parent.getChildren().add(item);
+        return item;
+    }
+
+
+//    TODO modified the bottom label
+//    TODO add content to the second tab
+//    TODO layout
 }
