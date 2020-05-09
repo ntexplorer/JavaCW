@@ -4,9 +4,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.DirectoryChooser;
 import weather.model.ProcessedStation;
 import weather.model.Station;
@@ -15,6 +20,7 @@ import weather.model.StationOverview;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -41,13 +47,7 @@ public class Controller implements Initializable {
     private Button generateReportBtn;
 
     @FXML
-    private Button bottomLabel;
-
-    @FXML
-    private Button tMaxBtn;
-
-    @FXML
-    private Button tMinBtn;
+    private Button tempBtn;
 
     @FXML
     private Button airFrostBtn;
@@ -56,7 +56,10 @@ public class Controller implements Initializable {
     private Button rainfallBtn;
 
     @FXML
-    private Button testBtn;
+    private BarChart<String, Number> dataBarChart;
+
+    @FXML
+    private AnchorPane treePane;
 
     @FXML
     private TreeView<String> dataTreeView;
@@ -85,18 +88,23 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         selectFolderBtn.setOnAction(e -> importData());
+
         importDataBtn.setOnAction(e -> {
             readAllData();
             dataProcess();
             displayData();
+            showTreeData();
         });
+
         generateReportBtn.setOnAction(e -> {
             getStatistics();
             generateReport();
         });
 
-        testBtn.setOnAction(e -> {
-            showTreeData();
+        dataTreeView.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
+            if (newValue != null) {
+                System.out.println(newValue.getValue());
+            }
         });
     }
 
@@ -252,9 +260,7 @@ public class Controller implements Initializable {
             tempProcessedStation.setRainfallSum(rainfall);
             tempProcessedStation.setMonthCount(monthCount);
             processedStationData.add(tempProcessedStation);
-//            for (ProcessedStation station : processedStationData) {
-//                System.out.println(station);
-//            }
+
             System.out.println(processedStationData.size());
         }
     }
@@ -388,7 +394,7 @@ public class Controller implements Initializable {
             root.setExpanded(true);
             String tempName = processedStationData.get(0).getStationName();
             TreeItem<String> stationItem = new TreeItem<>(tempName);
-            stationItem.setExpanded(true);
+            stationItem.setExpanded(false);
             root.getChildren().add(stationItem);
             for (ProcessedStation station : processedStationData) {
                 if (!tempName.equals(station.getStationName())) {
@@ -398,15 +404,54 @@ public class Controller implements Initializable {
                 makeBranch(Integer.toString(station.getYear()), stationItem);
             }
             dataTreeView = new TreeView<>(root);
-//            dataTreeView.setShowRoot(false);
+            dataTreeView.setShowRoot(false);
+            treePane.getChildren().add(dataTreeView);
         }
     }
 
     public TreeItem<String> makeBranch(String itemName, TreeItem<String> parent) {
         TreeItem<String> item = new TreeItem<>(itemName);
-        item.setExpanded(true);
+        item.setExpanded(false);
         parent.getChildren().add(item);
         return item;
+    }
+
+
+//    **************** End of Tree View  ************************
+
+//    **************** Charts  ************************
+
+    public void displayTempChart(TreeItem<String> treeItem) {
+        if (treeItem.isLeaf()) {
+            final CategoryAxis xAxis = new CategoryAxis();
+            final NumberAxis yAxis = new NumberAxis();
+            dataBarChart = new BarChart<>(xAxis, yAxis);
+            xAxis.setLabel("Year");
+            yAxis.setLabel("Temperature");
+            String stationName = treeItem.getParent().getValue();
+            int year = Integer.parseInt(treeItem.getValue());
+            dataBarChart.setTitle("Temperature of " + stationName + " Station in " + year);
+            List<String> monthList = new ArrayList<>();
+            List<Double> maxTempList = new ArrayList<>();
+            List<Double> minTempList = new ArrayList<>();
+            for (Station station : stationData) {
+                if ((station.getStationName().equals(stationName)) && (station.getYear() == year)) {
+                    monthList.add(String.valueOf(station.getMonth()));
+                    maxTempList.add(station.getMaximumTemperature());
+                    minTempList.add(station.getMinimumTemperature());
+                }
+            }
+
+            XYChart.Series series1 = new XYChart.Series();
+            XYChart.Series series2 = new XYChart.Series();
+            series1.setName("Maximum Temperature");
+            series2.setName("Manimum Temperature");
+            for (int i = 0; i < monthList.size(); i++) {
+                series1.getData().add(new XYChart.Data(monthList.get(i), maxTempList.get(i)));
+                series2.getData().add(new XYChart.Data(monthList.get(i), minTempList.get(i)));
+            }
+            dataBarChart.getData().addAll(series1, series2);
+        }
     }
 
 

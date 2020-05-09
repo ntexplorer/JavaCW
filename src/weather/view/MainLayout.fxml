@@ -111,17 +111,12 @@
                                            AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                                            AnchorPane.topAnchor="0.0">
                                     <items>
-                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                        <AnchorPane fx:id="treePane" minHeight="0.0" minWidth="0.0" prefHeight="160.0"
+                                                    prefWidth="100.0">
                                             <children>
-                                                <VBox prefHeight="419.0" prefWidth="193.0" AnchorPane.bottomAnchor="0.0"
-                                                      AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                                                      AnchorPane.topAnchor="0.0">
-                                                    <children>
-                                                        <Button fx:id="testBtn" mnemonicParsing="false" text="Button"/>
-                                                        <TreeView fx:id="dataTreeView" prefHeight="419.0"
-                                                                  prefWidth="193.0"/>
-                                                    </children>
-                                                </VBox>
+                                                <TreeView fx:id="dataTreeView" prefHeight="444.0" prefWidth="193.0"
+                                                          AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                                          AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
                                             </children>
                                         </AnchorPane>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
@@ -133,8 +128,8 @@
                                                     <children>
                                                         <HBox>
                                                             <children>
-                                                                <Button fx:id="tMaxBtn" mnemonicParsing="false"
-                                                                        text="Maximum Temperature">
+                                                                <Button fx:id="tempBtn" mnemonicParsing="false"
+                                                                        text="Temperature">
                                                                     <HBox.margin>
                                                                         <Insets bottom="10.0" left="10.0" right="10.0"
                                                                                 top="10.0"/>
@@ -143,17 +138,6 @@
                                                                         <Insets bottom="5.0" left="5.0" right="5.0"
                                                                                 top="5.0"/>
                                                                     </padding>
-                                                                </Button>
-                                                                <Button fx:id="tMinBtn" mnemonicParsing="false"
-                                                                        text="Minimum Temperature">
-                                                                    <padding>
-                                                                        <Insets bottom="5.0" left="5.0" right="5.0"
-                                                                                top="5.0"/>
-                                                                    </padding>
-                                                                    <HBox.margin>
-                                                                        <Insets bottom="10.0" left="10.0" right="10.0"
-                                                                                top="10.0"/>
-                                                                    </HBox.margin>
                                                                 </Button>
                                                                 <Button fx:id="airFrostBtn" mnemonicParsing="false"
                                                                         text="Air Frost Days">
@@ -179,7 +163,7 @@
                                                                 </Button>
                                                             </children>
                                                         </HBox>
-                                                        <BarChart>
+                                                        <BarChart fx:id="dataBarChart">
                                                             <xAxis>
                                                                 <CategoryAxis side="BOTTOM"/>
                                                             </xAxis>
@@ -187,6 +171,7 @@
                                                                 <NumberAxis side="LEFT"/>
                                                             </yAxis>
                                                         </BarChart>
+
                                                     </children>
                                                 </VBox>
                                             </children>
@@ -200,15 +185,4 @@
             </tabs>
         </TabPane>
     </center>
-    <bottom>
-        <HBox BorderPane.alignment="CENTER">
-            <children>
-                <Label text="Label">
-                    <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                    </padding>
-                </Label>
-            </children>
-        </HBox>
-    </bottom>
 </BorderPane>
