@@ -8,6 +8,7 @@ import javafx.beans.property.*;
 public class ProcessedStation {
     private StringProperty stationName = new SimpleStringProperty(this, "Station Name", "");
     private IntegerProperty year = new SimpleIntegerProperty(this, "Year", 0);
+    private final IntegerProperty monthCount = new SimpleIntegerProperty(this, "Count of Valid Month", 0);
     private final IntegerProperty maxTempMonth = new SimpleIntegerProperty(this, "Maximum Temperature Month", 1);
     private final IntegerProperty minTempMonth = new SimpleIntegerProperty(this, "Minimum Temperature Month", 1);
     private final DoubleProperty maximumTemperature = new SimpleDoubleProperty(this, "Maximum Temperature", 0);
@@ -33,6 +34,18 @@ public class ProcessedStation {
                 ", airFrostDaySum=" + this.getAirFrostDaySum() +
                 ", rainfallSum=" + this.getRainfallSum() +
                 '}';
+    }
+
+    public int getMonthCount() {
+        return monthCount.get();
+    }
+
+    public IntegerProperty monthCountProperty() {
+        return monthCount;
+    }
+
+    public void setMonthCount(int monthCount) {
+        this.monthCount.set(monthCount);
     }
 
     public String getStationName() {

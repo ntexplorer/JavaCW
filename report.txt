@@ -84,8 +84,8 @@ Number: 10
 Station: Cwmystwyth
 Highest Temperature: 18.8 degrees on 6/2012
 Lowest Temperature: -3.7 degrees on 12/2012
-Average annual air frost days: 21 days
-Average annual rainfall: 390.09 mm
+Average annual air frost days: 85 days
+Average annual rainfall: 1560.36 mm
 ***************************
 
 ***************************

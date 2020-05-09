@@ -108,13 +108,6 @@ public class Controller implements Initializable {
                 File file = fileArr[i];
                 if (file.getAbsolutePath().endsWith(".csv")) {
                     dataFiles.add(file);
-                } else {
-                    Alert alert = new Alert(AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("Fail To Import Data");
-                    alert.setContentText("Invalid file imported, please choose the correct directory!");
-                    alert.showAndWait();
-                    return null;
                 }
             }
         } else {
@@ -169,6 +162,7 @@ public class Controller implements Initializable {
             double tempLowest = stationData.get(0).getMinimumTemperature();
             int airFrostDay = 0;
             double rainfall = 0;
+            int monthCount = 0;
             ProcessedStation tempProcessedStation = new ProcessedStation(tempName, tempYear);
             for (Station station : stationData) {
                 if ((station.getStationName().equals(tempName)) && (station.getYear() == tempYear)) {
@@ -182,6 +176,7 @@ public class Controller implements Initializable {
                     }
                     airFrostDay += station.getAirFrostDayNum();
                     rainfall += station.getRainfall();
+                    monthCount += 1;
                 } else {
                     tempProcessedStation.setStationName(tempName);
                     tempProcessedStation.setYear(tempYear);
@@ -191,6 +186,7 @@ public class Controller implements Initializable {
                     tempProcessedStation.setMinTempMonth(tempLowestMonth);
                     tempProcessedStation.setAirFrostDaySum(airFrostDay);
                     tempProcessedStation.setRainfallSum(rainfall);
+                    tempProcessedStation.setMonthCount(monthCount);
                     processedStationData.add(tempProcessedStation);
                     tempProcessedStation = new ProcessedStation();
                     tempName = station.getStationName();
@@ -201,6 +197,7 @@ public class Controller implements Initializable {
                     tempLowestMonth = station.getMonth();
                     airFrostDay = station.getAirFrostDayNum();
                     rainfall = station.getRainfall();
+                    monthCount = 1;
                 }
             }
             tempProcessedStation.setStationName(tempName);
@@ -211,6 +208,7 @@ public class Controller implements Initializable {
             tempProcessedStation.setMinTempMonth(tempLowestMonth);
             tempProcessedStation.setAirFrostDaySum(airFrostDay);
             tempProcessedStation.setRainfallSum(rainfall);
+            tempProcessedStation.setMonthCount(monthCount);
             processedStationData.add(tempProcessedStation);
 //            for (ProcessedStation station : processedStationData) {
 //                System.out.println(station);
@@ -254,6 +252,7 @@ public class Controller implements Initializable {
             double tempLowest = processedStationData.get(0).getMinimumTemperature();
             int airFrostDay = 0;
             double rainfall = 0;
+            int monthCount = 0;
             StationOverview tempStationOverview = new StationOverview(tempName);
             for (ProcessedStation processedStation : processedStationData) {
                 if (processedStation.getStationName().equals(tempName)) {
@@ -269,6 +268,7 @@ public class Controller implements Initializable {
                     }
                     airFrostDay += processedStation.getAirFrostDaySum();
                     rainfall += processedStation.getRainfallSum();
+                    monthCount += processedStation.getMonthCount();
                 } else {
                     tempStationOverview.setStationName(tempName);
                     tempStationOverview.setHighestTemperature(tempHighest);
@@ -277,8 +277,9 @@ public class Controller implements Initializable {
                     tempStationOverview.setLowestTemperature(tempLowest);
                     tempStationOverview.setLowestYear(tempLowestYear);
                     tempStationOverview.setLowestMonth(tempLowestMonth);
-                    tempStationOverview.setAverageAirFrostDay(airFrostDay / 9);
-                    tempStationOverview.setAverageAnnualRainfall(rainfall / 9);
+                    int a = airFrostDay / monthCount * 12;
+                    tempStationOverview.setAverageAirFrostDay(airFrostDay * 12 / monthCount);
+                    tempStationOverview.setAverageAnnualRainfall(rainfall * 12 / monthCount);
                     overviewStationData.add(tempStationOverview);
                     tempStationOverview = new StationOverview();
                     tempName = processedStation.getStationName();
@@ -290,6 +291,7 @@ public class Controller implements Initializable {
                     tempLowest = processedStation.getMinimumTemperature();
                     airFrostDay = processedStation.getAirFrostDaySum();
                     rainfall = processedStation.getRainfallSum();
+                    monthCount = processedStation.getMonthCount();
                 }
             }
             tempStationOverview.setStationName(tempName);
@@ -299,8 +301,8 @@ public class Controller implements Initializable {
             tempStationOverview.setLowestTemperature(tempLowest);
             tempStationOverview.setLowestYear(tempLowestYear);
             tempStationOverview.setLowestMonth(tempLowestMonth);
-            tempStationOverview.setAverageAirFrostDay(airFrostDay / 9);
-            tempStationOverview.setAverageAnnualRainfall(rainfall / 9);
+            tempStationOverview.setAverageAirFrostDay(airFrostDay * 12 / monthCount);
+            tempStationOverview.setAverageAnnualRainfall(rainfall * 12 / monthCount);
             overviewStationData.add(tempStationOverview);
 //            System.out.println(overviewStationData.size());
         }
