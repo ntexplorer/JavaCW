@@ -4,6 +4,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
@@ -11,8 +14,8 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
 import weather.model.ProcessedStation;
 import weather.model.Station;
 import weather.model.StationOverview;
@@ -35,6 +38,21 @@ public class Controller implements Initializable {
     private File selectedDirectory;
 
     @FXML
+    private MenuItem selectDirMenu;
+
+    @FXML
+    private MenuItem importDataMenu;
+
+    @FXML
+    private MenuItem genReportMenu;
+
+    @FXML
+    private MenuItem exitMenu;
+
+    @FXML
+    private MenuItem aboutMenu;
+
+    @FXML
     private Button selectFolderBtn;
 
     @FXML
@@ -47,19 +65,31 @@ public class Controller implements Initializable {
     private Button generateReportBtn;
 
     @FXML
-    private Button tempBtn;
+    private BarChart<String, Number> tempBarChart;
 
     @FXML
-    private Button airFrostBtn;
+    private CategoryAxis xAxis1;
 
     @FXML
-    private Button rainfallBtn;
+    private NumberAxis yAxis1;
 
     @FXML
-    private BarChart<String, Number> dataBarChart;
+    private BarChart<String, Number> airFrostBarChart;
 
     @FXML
-    private AnchorPane treePane;
+    private CategoryAxis xAxis2;
+
+    @FXML
+    private NumberAxis yAxis2;
+
+    @FXML
+    private BarChart<String, Number> rainfallBarChart;
+
+    @FXML
+    private CategoryAxis xAxis3;
+
+    @FXML
+    private NumberAxis yAxis3;
 
     @FXML
     private TreeView<String> dataTreeView;
@@ -85,11 +115,25 @@ public class Controller implements Initializable {
     @FXML
     private TableColumn<ProcessedStation, Double> totalRainfallColumn;
 
+    @FXML
+    private TableColumn<ProcessedStation, Integer> maxTempMonthCol;
+
+    @FXML
+    private TableColumn<ProcessedStation, Integer> minTempMonthCol;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         selectFolderBtn.setOnAction(e -> importData());
+        selectDirMenu.setOnAction(e -> importData());
 
         importDataBtn.setOnAction(e -> {
+            readAllData();
+            dataProcess();
+            displayData();
+            showTreeData();
+
+        });
+        importDataMenu.setOnAction(e -> {
             readAllData();
             dataProcess();
             displayData();
@@ -100,11 +144,28 @@ public class Controller implements Initializable {
             getStatistics();
             generateReport();
         });
+        genReportMenu.setOnAction(e -> {
+            getStatistics();
+            generateReport();
+        });
+
+        exitMenu.setOnAction(e -> {
+            Stage stage = (Stage) importDataBtn.getScene().getWindow();
+            stage.close();
+        });
+
+        aboutMenu.setOnAction(e -> {
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Author Information");
+            alert.setHeaderText("CMT205 - Coursework");
+            alert.setContentText("Author Name: Tian ZHANG\nStudent Number: c1912705");
+            alert.showAndWait();
+        });
 
         dataTreeView.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
-            if (newValue != null) {
-                System.out.println(newValue.getValue());
-            }
+            displayTempChart(newValue);
+            displayAirFrostChart(newValue);
+            displayRainfallChart(newValue);
         });
     }
 
@@ -269,7 +330,9 @@ public class Controller implements Initializable {
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("stationName"));
         yearColumn.setCellValueFactory(new PropertyValueFactory<>("year"));
         maxTempColumn.setCellValueFactory(new PropertyValueFactory<>("maximumTemperature"));
+        maxTempMonthCol.setCellValueFactory(new PropertyValueFactory<>("maxTempMonth"));
         minTempColumn.setCellValueFactory(new PropertyValueFactory<>("minimumTemperature"));
+        minTempMonthCol.setCellValueFactory(new PropertyValueFactory<>("minTempMonth"));
         totalAirFrostColumn.setCellValueFactory(new PropertyValueFactory<>("airFrostDaySum"));
         totalRainfallColumn.setCellValueFactory(new PropertyValueFactory<>("rainfallSum"));
         dataTable.setItems(processedStationData);
@@ -356,30 +419,39 @@ public class Controller implements Initializable {
     }
 
     public void generateReport() {
-        try {
-            File report = new File("report.txt");
-            if (!report.exists()) {
-                report.createNewFile();
-            }
-            FileWriter fw = new FileWriter(report.getAbsolutePath());
-            BufferedWriter bw = new BufferedWriter(fw);
-            for (int i = 0; i < overviewStationData.size(); i++) {
-                bw.write("***************************\n");
-                bw.write("Number: " + (i + 1) + "\n");
-                bw.write(overviewStationData.get(i).toString());
-                bw.write("***************************\n\n");
-            }
-            bw.flush();
-            bw.close();
-            Alert alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle("Success");
-            alert.setHeaderText("Report Generated");
-            alert.setContentText("Report generated successfully!");
-            alert.showAndWait();
+        if (!overviewStationData.isEmpty()) {
+            try {
+                File report = new File("report.txt");
+                if (!report.exists()) {
+                    report.createNewFile();
+                }
+                FileWriter fw = new FileWriter(report.getAbsolutePath());
+                BufferedWriter bw = new BufferedWriter(fw);
+                for (int i = 0; i < overviewStationData.size(); i++) {
+                    bw.write("***************************\n");
+                    bw.write("Number: " + (i + 1) + "\n");
+                    bw.write(overviewStationData.get(i).toString());
+                    bw.write("***************************\n\n");
+                }
+                bw.flush();
+                bw.close();
+                Alert alert = new Alert(AlertType.INFORMATION);
+                alert.setTitle("Success");
+                alert.setHeaderText("Report Generated");
+                alert.setContentText("Report generated successfully!");
+                alert.showAndWait();
 
-        } catch (IOException e) {
-            e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("No Data Found");
+            alert.setContentText("Please import the data and try again!");
+            alert.showAndWait();
         }
+
 
     }
 
@@ -403,9 +475,8 @@ public class Controller implements Initializable {
                 }
                 makeBranch(Integer.toString(station.getYear()), stationItem);
             }
-            dataTreeView = new TreeView<>(root);
+            dataTreeView.setRoot(root);
             dataTreeView.setShowRoot(false);
-            treePane.getChildren().add(dataTreeView);
         }
     }
 
@@ -423,19 +494,16 @@ public class Controller implements Initializable {
 
     public void displayTempChart(TreeItem<String> treeItem) {
         if (treeItem.isLeaf()) {
-            final CategoryAxis xAxis = new CategoryAxis();
-            final NumberAxis yAxis = new NumberAxis();
-            dataBarChart = new BarChart<>(xAxis, yAxis);
-            xAxis.setLabel("Year");
-            yAxis.setLabel("Temperature");
+            xAxis1.setLabel("Year");
+            yAxis1.setLabel("Temperature");
             String stationName = treeItem.getParent().getValue();
-            int year = Integer.parseInt(treeItem.getValue());
-            dataBarChart.setTitle("Temperature of " + stationName + " Station in " + year);
+            String year = treeItem.getValue();
+            tempBarChart.setTitle("Temperature of " + stationName + " Station in " + year);
             List<String> monthList = new ArrayList<>();
             List<Double> maxTempList = new ArrayList<>();
             List<Double> minTempList = new ArrayList<>();
             for (Station station : stationData) {
-                if ((station.getStationName().equals(stationName)) && (station.getYear() == year)) {
+                if ((station.getStationName().equals(stationName)) && (station.getYear() == Integer.parseInt(year))) {
                     monthList.add(String.valueOf(station.getMonth()));
                     maxTempList.add(station.getMaximumTemperature());
                     minTempList.add(station.getMinimumTemperature());
@@ -445,17 +513,108 @@ public class Controller implements Initializable {
             XYChart.Series series1 = new XYChart.Series();
             XYChart.Series series2 = new XYChart.Series();
             series1.setName("Maximum Temperature");
-            series2.setName("Manimum Temperature");
+            series2.setName("Minimum Temperature");
+
+            ObservableList<XYChart.Series<String, Number>> allSeries = tempBarChart.getData();
+            for (XYChart.Series<String, Number> series : allSeries) {
+                for (XYChart.Data<String, Number> data : series.getData()) {
+                    Node node = data.getNode();
+                    Parent parent = node.parentProperty().get();
+                    if (parent instanceof Group) {
+                        Group group = (Group) parent;
+                        group.getChildren().clear();
+                    }
+                }
+            }
+            allSeries.clear();
+
             for (int i = 0; i < monthList.size(); i++) {
                 series1.getData().add(new XYChart.Data(monthList.get(i), maxTempList.get(i)));
                 series2.getData().add(new XYChart.Data(monthList.get(i), minTempList.get(i)));
             }
-            dataBarChart.getData().addAll(series1, series2);
+            tempBarChart.getData().addAll(series1, series2);
         }
     }
 
+    public void displayAirFrostChart(TreeItem<String> treeItem) {
+        if (treeItem.isLeaf()) {
+            xAxis2.setLabel("Year");
+            yAxis2.setLabel("Air Frost Day");
+            String stationName = treeItem.getParent().getValue();
+            String year = treeItem.getValue();
+            airFrostBarChart.setTitle("Air Frost Days of " + stationName + " Station in " + year);
+            List<String> monthList = new ArrayList<>();
+            List<Integer> airFrostList = new ArrayList<>();
+            for (Station station : stationData) {
+                if ((station.getStationName().equals(stationName)) && (station.getYear() == Integer.parseInt(year))) {
+                    monthList.add(String.valueOf(station.getMonth()));
+                    airFrostList.add(station.getAirFrostDayNum());
+                }
+            }
 
-//    TODO modified the bottom label
-//    TODO add content to the second tab
-//    TODO layout
+            XYChart.Series series3 = new XYChart.Series();
+            series3.setName("Air Frost Days");
+            ObservableList<XYChart.Series<String, Number>> allSeries = airFrostBarChart.getData();
+
+            for (XYChart.Series<String, Number> series : allSeries) {
+                for (XYChart.Data<String, Number> data : series.getData()) {
+                    Node node = data.getNode();
+                    Parent parent = node.parentProperty().get();
+                    if (parent instanceof Group) {
+                        Group group = (Group) parent;
+                        group.getChildren().clear();
+                    }
+                }
+            }
+            allSeries.clear();
+
+            for (int i = 0; i < monthList.size(); i++) {
+                series3.getData().add(new XYChart.Data(monthList.get(i), airFrostList.get(i)));
+            }
+            airFrostBarChart.getData().addAll(series3);
+        }
+    }
+
+    public void displayRainfallChart(TreeItem<String> treeItem) {
+        if (treeItem.isLeaf()) {
+            xAxis3.setLabel("Year");
+            yAxis3.setLabel("Rainfall");
+            String stationName = treeItem.getParent().getValue();
+            String year = treeItem.getValue();
+            rainfallBarChart.setTitle("Rainfall of " + stationName + " Station in " + year);
+            List<String> monthList = new ArrayList<>();
+            List<Double> rainfallList = new ArrayList<>();
+            for (Station station : stationData) {
+                if ((station.getStationName().equals(stationName)) && (station.getYear() == Integer.parseInt(year))) {
+                    monthList.add(String.valueOf(station.getMonth()));
+                    rainfallList.add(station.getRainfall());
+                }
+            }
+
+            XYChart.Series series4 = new XYChart.Series();
+            series4.setName("Rainfall");
+            ObservableList<XYChart.Series<String, Number>> allSeries = rainfallBarChart.getData();
+
+            for (XYChart.Series<String, Number> series : allSeries) {
+                for (XYChart.Data<String, Number> data : series.getData()) {
+                    Node node = data.getNode();
+                    Parent parent = node.parentProperty().get();
+                    if (parent instanceof Group) {
+                        Group group = (Group) parent;
+                        group.getChildren().clear();
+                    }
+                }
+            }
+            allSeries.clear();
+
+            for (int i = 0; i < monthList.size(); i++) {
+                series4.getData().add(new XYChart.Data(monthList.get(i), rainfallList.get(i)));
+            }
+            rainfallBarChart.getData().addAll(series4);
+        }
+    }
 }
+
+// TODO switch the layout to JFoenix
+// TODO change the tab context
+// TODO add Icon

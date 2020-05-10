@@ -1,30 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.*?>
-<?import javafx.scene.chart.BarChart?>
-<?import javafx.scene.chart.CategoryAxis?>
-<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0"
-            prefWidth="900.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0"
+            prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="weather.view.Controller">
     <top>
         <MenuBar BorderPane.alignment="CENTER">
             <menus>
                 <Menu mnemonicParsing="false" text="File">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Close"/>
-                    </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="Delete"/>
+                        <MenuItem fx:id="selectDirMenu" mnemonicParsing="false" text="Select Data Directory..."/>
+                        <MenuItem fx:id="importDataMenu" mnemonicParsing="false" text="Import &amp; Display Data"/>
+                        <MenuItem fx:id="genReportMenu" mnemonicParsing="false" text="Generate Report"/>
+                        <SeparatorMenuItem mnemonicParsing="false"/>
+                        <MenuItem fx:id="exitMenu" mnemonicParsing="false" text="Exit"/>
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="About"/>
+                        <MenuItem fx:id="aboutMenu" mnemonicParsing="false" text="About"/>
                     </items>
                 </Menu>
             </menus>
@@ -53,7 +50,7 @@
                                                     </HBox.margin>
                                                 </Button>
                                                 <Button fx:id="importDataBtn" mnemonicParsing="false"
-                                                        text="Import Data">
+                                                        text="Import &amp; Display Data">
                                                     <padding>
                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                                     </padding>
@@ -80,16 +77,20 @@
                                                 <Insets bottom="10.0" left="10.0"/>
                                             </VBox.margin>
                                         </Label>
-                                        <TableView fx:id="dataTable">
+                                        <TableView fx:id="dataTable" prefHeight="691.0" prefWidth="1200.0">
                                             <columns>
                                                 <TableColumn fx:id="nameColumn" minWidth="-Infinity" prefWidth="150.0"
                                                              text="Station Name"/>
                                                 <TableColumn fx:id="yearColumn" minWidth="-Infinity" prefWidth="150.0"
                                                              text="Year"/>
                                                 <TableColumn fx:id="maxTempColumn" minWidth="-Infinity"
-                                                             prefWidth="150.0" text="Highest Mothly"/>
+                                                             prefWidth="150.0" text="Maximum Temperature"/>
+                                                <TableColumn fx:id="maxTempMonthCol" minWidth="-Infinity"
+                                                             prefWidth="150.0" text="Max-Month"/>
                                                 <TableColumn fx:id="minTempColumn" minWidth="-Infinity"
-                                                             prefWidth="150.0" text="Lowest Monthly"/>
+                                                             prefWidth="150.0" text="Minimum Temperature"/>
+                                                <TableColumn fx:id="minTempMonthCol" minWidth="-Infinity"
+                                                             prefWidth="150.0" text="Min-Month"/>
                                                 <TableColumn fx:id="totalAirFrostColumn" minWidth="-Infinity"
                                                              prefWidth="150.0" text="Total Air Frost Days"/>
                                                 <TableColumn fx:id="totalRainfallColumn" minWidth="-Infinity"
@@ -126,49 +127,28 @@
                                                       AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                                                       AnchorPane.topAnchor="0.0">
                                                     <children>
-                                                        <HBox>
-                                                            <children>
-                                                                <Button fx:id="tempBtn" mnemonicParsing="false"
-                                                                        text="Temperature">
-                                                                    <HBox.margin>
-                                                                        <Insets bottom="10.0" left="10.0" right="10.0"
-                                                                                top="10.0"/>
-                                                                    </HBox.margin>
-                                                                    <padding>
-                                                                        <Insets bottom="5.0" left="5.0" right="5.0"
-                                                                                top="5.0"/>
-                                                                    </padding>
-                                                                </Button>
-                                                                <Button fx:id="airFrostBtn" mnemonicParsing="false"
-                                                                        text="Air Frost Days">
-                                                                    <padding>
-                                                                        <Insets bottom="5.0" left="5.0" right="5.0"
-                                                                                top="5.0"/>
-                                                                    </padding>
-                                                                    <HBox.margin>
-                                                                        <Insets bottom="10.0" left="10.0" right="10.0"
-                                                                                top="10.0"/>
-                                                                    </HBox.margin>
-                                                                </Button>
-                                                                <Button fx:id="rainfallBtn" mnemonicParsing="false"
-                                                                        text="Rainfall">
-                                                                    <padding>
-                                                                        <Insets bottom="5.0" left="5.0" right="5.0"
-                                                                                top="5.0"/>
-                                                                    </padding>
-                                                                    <HBox.margin>
-                                                                        <Insets bottom="10.0" left="10.0" right="10.0"
-                                                                                top="10.0"/>
-                                                                    </HBox.margin>
-                                                                </Button>
-                                                            </children>
-                                                        </HBox>
-                                                        <BarChart fx:id="dataBarChart">
+                                                        <BarChart fx:id="tempBarChart">
                                                             <xAxis>
-                                                                <CategoryAxis side="BOTTOM"/>
+                                                                <CategoryAxis side="BOTTOM" fx:id="xAxis1"/>
                                                             </xAxis>
                                                             <yAxis>
-                                                                <NumberAxis side="LEFT"/>
+                                                                <NumberAxis fx:id="yAxis1" side="LEFT"/>
+                                                            </yAxis>
+                                                        </BarChart>
+                                                        <BarChart fx:id="airFrostBarChart">
+                                                            <xAxis>
+                                                                <CategoryAxis side="BOTTOM" fx:id="xAxis2"/>
+                                                            </xAxis>
+                                                            <yAxis>
+                                                                <NumberAxis fx:id="yAxis2" side="LEFT"/>
+                                                            </yAxis>
+                                                        </BarChart>
+                                                        <BarChart fx:id="rainfallBarChart">
+                                                            <xAxis>
+                                                                <CategoryAxis side="BOTTOM" fx:id="xAxis3"/>
+                                                            </xAxis>
+                                                            <yAxis>
+                                                                <NumberAxis fx:id="yAxis3" side="LEFT"/>
                                                             </yAxis>
                                                         </BarChart>
 
