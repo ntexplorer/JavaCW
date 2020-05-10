@@ -7,13 +7,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.chart.BarChart;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
+import javafx.scene.chart.*;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import weather.model.ProcessedStation;
@@ -28,6 +27,8 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 
 /**
+ * The Controller of the GUI
+ *
  * @author Tian Z
  */
 public class Controller implements Initializable {
@@ -36,6 +37,9 @@ public class Controller implements Initializable {
     private final ObservableList<StationOverview> overviewStationData = FXCollections.observableArrayList();
 
     private File selectedDirectory;
+
+    @FXML
+    private ImageView titleImage;
 
     @FXML
     private MenuItem selectDirMenu;
@@ -92,7 +96,37 @@ public class Controller implements Initializable {
     private NumberAxis yAxis3;
 
     @FXML
+    private LineChart<String, Number> tempLineChart;
+
+    @FXML
+    private CategoryAxis xAxis4;
+
+    @FXML
+    private NumberAxis yAxis4;
+
+    @FXML
+    private LineChart<String, Number> airFrostLineChart;
+
+    @FXML
+    private CategoryAxis xAxis5;
+
+    @FXML
+    private NumberAxis yAxis5;
+
+    @FXML
+    private LineChart<String, Number> rainfallLineChart;
+
+    @FXML
+    private CategoryAxis xAxis6;
+
+    @FXML
+    private NumberAxis yAxis6;
+
+    @FXML
     private TreeView<String> dataTreeView;
+
+    @FXML
+    private TreeView<String> overallTreeView;
 
     @FXML
     private TableView<ProcessedStation> dataTable;
@@ -121,8 +155,20 @@ public class Controller implements Initializable {
     @FXML
     private TableColumn<ProcessedStation, Integer> minTempMonthCol;
 
+    /**
+     * initializing method, connecting all the widgets
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+//        Add the title image
+        try {
+            FileInputStream input = new FileInputStream("img/title.png");
+            Image image = new Image(input);
+            titleImage.setImage(image);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
         selectFolderBtn.setOnAction(e -> importData());
         selectDirMenu.setOnAction(e -> importData());
 
@@ -131,19 +177,22 @@ public class Controller implements Initializable {
             dataProcess();
             displayData();
             showTreeData();
-
+            showAllTreeData();
         });
+
         importDataMenu.setOnAction(e -> {
             readAllData();
             dataProcess();
             displayData();
             showTreeData();
+            showAllTreeData();
         });
 
         generateReportBtn.setOnAction(e -> {
             getStatistics();
             generateReport();
         });
+
         genReportMenu.setOnAction(e -> {
             getStatistics();
             generateReport();
@@ -162,29 +211,56 @@ public class Controller implements Initializable {
             alert.showAndWait();
         });
 
+//        add listener for the tree view to connect the bar charts
         dataTreeView.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
             displayTempChart(newValue);
             displayAirFrostChart(newValue);
             displayRainfallChart(newValue);
+        });
+
+//        add listener for the tree view to connect the line charts
+        overallTreeView.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
+            displayTempLineChart(newValue);
+            displayAirFrostLineChart(newValue);
+            displayRainfallLineChart(newValue);
         });
     }
 
 
 //    **************** Import Data File ************************
 
+    /**
+     * Open a directoryChooser to select the data folder
+     */
     private void importData() {
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle("Choose the resource directory...");
-        directoryChooser.setInitialDirectory(new File("resources/"));
-        selectedDirectory = directoryChooser.showDialog(selectFolderBtn.getScene().getWindow());
-        directoryChosen.setText("Directory Chosen: " + selectedDirectory.getAbsolutePath());
+        try {
+            DirectoryChooser directoryChooser = new DirectoryChooser();
+            directoryChooser.setTitle("Choose the resource directory...");
+//        default folder set to resources folder so the user won't need to find the folder manually
+            directoryChooser.setInitialDirectory(new File("resources/"));
+            selectedDirectory = directoryChooser.showDialog(selectFolderBtn.getScene().getWindow());
+//        set the label to the folder chosen for reference
+            directoryChosen.setText("Directory Chosen: " + selectedDirectory.getAbsolutePath());
+        } catch (NullPointerException e) {
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Directory Required");
+            alert.setHeaderText("No Directory Selected");
+            alert.setContentText("You need to choose a directory to proceed.");
+            alert.showAndWait();
+        }
     }
 
 //    **************** End Import Data File ************************
 
 //    **************** Process & Display Data ************************
 
+    /**
+     * validate the files in the chosen folder for exception handling
+     *
+     * @return The list of file
+     */
     private ArrayList<File> validateData() {
+//        if clicked import btn without choosing a directory
         if (selectedDirectory == null) {
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Error");
@@ -197,14 +273,17 @@ public class Controller implements Initializable {
         File[] fileArr = selectedDirectory.listFiles();
         assert fileArr != null;
         System.out.println("fileArr : " + fileArr.length);
+//        if the file array is not empty
         if (fileArr.length > 0) {
             for (int i = 0; i < Objects.requireNonNull(fileArr).length; i++) {
                 File file = fileArr[i];
+//                if the file type is csv then add it to the List dataFiles
                 if (file.getAbsolutePath().endsWith(".csv")) {
                     dataFiles.add(file);
                 }
             }
         } else {
+//            exception for choosing an empty directory
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Empty directory");
@@ -213,30 +292,40 @@ public class Controller implements Initializable {
             directoryChosen.setText("Directory Chosen: ");
             return null;
         }
+//        show message if any csv files imported
         if (dataFiles.size() > 0) {
             Alert alert = new Alert(AlertType.INFORMATION);
             alert.setTitle("Success");
             alert.setHeaderText("Data process done");
             alert.setContentText("Data imported and displayed successfully!");
             alert.showAndWait();
+//            clear the path label
             directoryChosen.setText("Directory Chosen: ");
             return dataFiles;
         } else {
+//            if the chosen directory is not empty but without any csv file, then nothing imported into dataFiles
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("No Data File Found");
             alert.setContentText("No csv file in the selected directory, please try again.");
             alert.showAndWait();
+            //            clear the path label
             directoryChosen.setText("Directory Chosen: ");
             return null;
         }
     }
 
+    /**
+     * read single piece of data and create a instance of Station
+     *
+     * @param file the data file
+     */
     private void readData(File file) {
         try {
             BufferedReader fileReader = new BufferedReader(new FileReader(file));
             String lineData;
             while ((lineData = fileReader.readLine()) != null) {
+//                split the data with "," and put them in a string array, then add to Station instance
                 String[] dataSet = lineData.split(",");
                 Station tempStation = new Station(getFileNameNoEx(file.getName()),
                         Integer.parseInt(dataSet[0]), Integer.parseInt(dataSet[1]),
@@ -249,11 +338,11 @@ public class Controller implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        for (Station station : stationData) {
-//            System.out.println(station);
-//        }
     }
 
+    /**
+     * call the validation and read singe data method
+     */
     private void readAllData() {
         ArrayList<File> dataFileArray = validateData();
         if (dataFileArray != null) {
@@ -263,6 +352,9 @@ public class Controller implements Initializable {
         }
     }
 
+    /**
+     * Create a processed data instance using Station instance, which contains the annually data
+     */
     private void dataProcess() {
         if (!stationData.isEmpty()) {
             String tempName = stationData.get(0).getStationName();
@@ -326,6 +418,9 @@ public class Controller implements Initializable {
         }
     }
 
+    /**
+     * Display all the data in the TableView
+     */
     private void displayData() {
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("stationName"));
         yearColumn.setCellValueFactory(new PropertyValueFactory<>("year"));
@@ -338,6 +433,10 @@ public class Controller implements Initializable {
         dataTable.setItems(processedStationData);
     }
 
+    /**
+     * @param filename file with extended name
+     * @return filename without extended name
+     */
     private static String getFileNameNoEx(String filename) {
         if ((filename != null) && (filename.length() > 0)) {
             int dot = filename.lastIndexOf('.');
@@ -352,7 +451,11 @@ public class Controller implements Initializable {
 
 //    **************** Report Generator  ************************
 
-    public void getStatistics() {
+    /**
+     * Gets statistics.
+     * Using processed station instance to create a overview station instance
+     */
+    private void getStatistics() {
         if (!processedStationData.isEmpty()) {
             String tempName = processedStationData.get(0).getStationName();
             int tempHighestYear = processedStationData.get(0).getYear();
@@ -388,6 +491,7 @@ public class Controller implements Initializable {
                     tempStationOverview.setLowestTemperature(tempLowest);
                     tempStationOverview.setLowestYear(tempLowestYear);
                     tempStationOverview.setLowestMonth(tempLowestMonth);
+//                  For there is missing data in some files, use month number to calculate the average air frost and rainfall
                     tempStationOverview.setAverageAirFrostDay(airFrostDay * 12 / monthCount);
                     tempStationOverview.setAverageAnnualRainfall(rainfall * 12 / monthCount);
                     overviewStationData.add(tempStationOverview);
@@ -404,6 +508,7 @@ public class Controller implements Initializable {
                     monthCount = processedStation.getMonthCount();
                 }
             }
+//           The last set of data not processed in the for loop above
             tempStationOverview.setStationName(tempName);
             tempStationOverview.setHighestTemperature(tempHighest);
             tempStationOverview.setHighestYear(tempHighestYear);
@@ -418,7 +523,10 @@ public class Controller implements Initializable {
         }
     }
 
-    public void generateReport() {
+    /**
+     * Generate report.
+     */
+    private void generateReport() {
         if (!overviewStationData.isEmpty()) {
             try {
                 File report = new File("report.txt");
@@ -460,7 +568,10 @@ public class Controller implements Initializable {
 
 //    **************** Tree View  ************************
 
-    public void showTreeData() {
+    /**
+     * Show tree data in the TreeView
+     */
+    private void showTreeData() {
         if (!processedStationData.isEmpty()) {
             TreeItem<String> root = new TreeItem<>("Station");
             root.setExpanded(true);
@@ -473,6 +584,7 @@ public class Controller implements Initializable {
                     tempName = station.getStationName();
                     stationItem = makeBranch(tempName, root);
                 }
+//                set year to the branch of stationItem
                 makeBranch(Integer.toString(station.getYear()), stationItem);
             }
             dataTreeView.setRoot(root);
@@ -480,7 +592,37 @@ public class Controller implements Initializable {
         }
     }
 
-    public TreeItem<String> makeBranch(String itemName, TreeItem<String> parent) {
+    /**
+     * Show the overview data in the TreeView in the 3rd tab
+     */
+    private void showAllTreeData() {
+        if (!processedStationData.isEmpty()) {
+            TreeItem<String> root = new TreeItem<>("Station");
+            root.setExpanded(true);
+            String tempName = processedStationData.get(0).getStationName();
+            TreeItem<String> stationItem = new TreeItem<>(tempName);
+            stationItem.setExpanded(false);
+            root.getChildren().add(stationItem);
+            for (ProcessedStation station : processedStationData) {
+                if (!tempName.equals(station.getStationName())) {
+                    tempName = station.getStationName();
+                    stationItem = new TreeItem<>(tempName);
+                    root.getChildren().add(stationItem);
+                }
+            }
+            overallTreeView.setRoot(root);
+            overallTreeView.setShowRoot(false);
+        }
+    }
+
+    /**
+     * Make branch tree item.
+     *
+     * @param itemName the item name
+     * @param parent   the parent
+     * @return the tree item
+     */
+    private TreeItem<String> makeBranch(String itemName, TreeItem<String> parent) {
         TreeItem<String> item = new TreeItem<>(itemName);
         item.setExpanded(false);
         parent.getChildren().add(item);
@@ -492,9 +634,15 @@ public class Controller implements Initializable {
 
 //    **************** Charts  ************************
 
-    public void displayTempChart(TreeItem<String> treeItem) {
+    /**
+     * Display temperature bar chart.
+     *
+     * @param treeItem the tree item
+     */
+    private void displayTempChart(TreeItem<String> treeItem) {
         if (treeItem.isLeaf()) {
-            xAxis1.setLabel("Year");
+            clearBarChart(tempBarChart);
+            xAxis1.setLabel("Month");
             yAxis1.setLabel("Temperature");
             String stationName = treeItem.getParent().getValue();
             String year = treeItem.getValue();
@@ -515,19 +663,6 @@ public class Controller implements Initializable {
             series1.setName("Maximum Temperature");
             series2.setName("Minimum Temperature");
 
-            ObservableList<XYChart.Series<String, Number>> allSeries = tempBarChart.getData();
-            for (XYChart.Series<String, Number> series : allSeries) {
-                for (XYChart.Data<String, Number> data : series.getData()) {
-                    Node node = data.getNode();
-                    Parent parent = node.parentProperty().get();
-                    if (parent instanceof Group) {
-                        Group group = (Group) parent;
-                        group.getChildren().clear();
-                    }
-                }
-            }
-            allSeries.clear();
-
             for (int i = 0; i < monthList.size(); i++) {
                 series1.getData().add(new XYChart.Data(monthList.get(i), maxTempList.get(i)));
                 series2.getData().add(new XYChart.Data(monthList.get(i), minTempList.get(i)));
@@ -536,9 +671,15 @@ public class Controller implements Initializable {
         }
     }
 
-    public void displayAirFrostChart(TreeItem<String> treeItem) {
+    /**
+     * Display air frost chart.
+     *
+     * @param treeItem the tree item
+     */
+    private void displayAirFrostChart(TreeItem<String> treeItem) {
         if (treeItem.isLeaf()) {
-            xAxis2.setLabel("Year");
+            clearBarChart(airFrostBarChart);
+            xAxis2.setLabel("Month");
             yAxis2.setLabel("Air Frost Day");
             String stationName = treeItem.getParent().getValue();
             String year = treeItem.getValue();
@@ -554,19 +695,6 @@ public class Controller implements Initializable {
 
             XYChart.Series series3 = new XYChart.Series();
             series3.setName("Air Frost Days");
-            ObservableList<XYChart.Series<String, Number>> allSeries = airFrostBarChart.getData();
-
-            for (XYChart.Series<String, Number> series : allSeries) {
-                for (XYChart.Data<String, Number> data : series.getData()) {
-                    Node node = data.getNode();
-                    Parent parent = node.parentProperty().get();
-                    if (parent instanceof Group) {
-                        Group group = (Group) parent;
-                        group.getChildren().clear();
-                    }
-                }
-            }
-            allSeries.clear();
 
             for (int i = 0; i < monthList.size(); i++) {
                 series3.getData().add(new XYChart.Data(monthList.get(i), airFrostList.get(i)));
@@ -575,9 +703,15 @@ public class Controller implements Initializable {
         }
     }
 
-    public void displayRainfallChart(TreeItem<String> treeItem) {
+    /**
+     * Display rainfall chart.
+     *
+     * @param treeItem the tree item
+     */
+    private void displayRainfallChart(TreeItem<String> treeItem) {
         if (treeItem.isLeaf()) {
-            xAxis3.setLabel("Year");
+            clearBarChart(rainfallBarChart);
+            xAxis3.setLabel("Month");
             yAxis3.setLabel("Rainfall");
             String stationName = treeItem.getParent().getValue();
             String year = treeItem.getValue();
@@ -593,19 +727,6 @@ public class Controller implements Initializable {
 
             XYChart.Series series4 = new XYChart.Series();
             series4.setName("Rainfall");
-            ObservableList<XYChart.Series<String, Number>> allSeries = rainfallBarChart.getData();
-
-            for (XYChart.Series<String, Number> series : allSeries) {
-                for (XYChart.Data<String, Number> data : series.getData()) {
-                    Node node = data.getNode();
-                    Parent parent = node.parentProperty().get();
-                    if (parent instanceof Group) {
-                        Group group = (Group) parent;
-                        group.getChildren().clear();
-                    }
-                }
-            }
-            allSeries.clear();
 
             for (int i = 0; i < monthList.size(); i++) {
                 series4.getData().add(new XYChart.Data(monthList.get(i), rainfallList.get(i)));
@@ -613,8 +734,140 @@ public class Controller implements Initializable {
             rainfallBarChart.getData().addAll(series4);
         }
     }
-}
 
-// TODO switch the layout to JFoenix
-// TODO change the tab context
-// TODO add Icon
+    /**
+     * Display temp line chart.
+     *
+     * @param treeItem the tree item
+     */
+    private void displayTempLineChart(TreeItem<String> treeItem) {
+        clearLineChart(tempLineChart);
+
+        xAxis4.setLabel("Year");
+        yAxis4.setLabel("Temperature");
+        String stationName = treeItem.getValue();
+        tempLineChart.setTitle("Temperature of " + stationName + " Station");
+        List<String> yearList = new ArrayList<>();
+        List<Double> maxTempList = new ArrayList<>();
+        List<Double> minTempList = new ArrayList<>();
+        for (ProcessedStation station : processedStationData) {
+            if (station.getStationName().equals(stationName)) {
+                yearList.add(String.valueOf(station.getYear()));
+                maxTempList.add(station.getMaximumTemperature());
+                minTempList.add(station.getMinimumTemperature());
+            }
+        }
+
+        XYChart.Series series5 = new XYChart.Series();
+        XYChart.Series series6 = new XYChart.Series();
+        series5.setName("Maximum Temperature");
+        series6.setName("Minimum Temperature");
+
+
+        for (int i = 0; i < yearList.size(); i++) {
+            series5.getData().add(new XYChart.Data(yearList.get(i), maxTempList.get(i)));
+            series6.getData().add(new XYChart.Data(yearList.get(i), minTempList.get(i)));
+        }
+        tempLineChart.getData().addAll(series5, series6);
+    }
+
+    /**
+     * Display air frost line chart.
+     *
+     * @param treeItem the tree item
+     */
+    private void displayAirFrostLineChart(TreeItem<String> treeItem) {
+        clearLineChart(airFrostLineChart);
+
+        xAxis5.setLabel("Year");
+        yAxis5.setLabel("Air Frost Day");
+        String stationName = treeItem.getValue();
+        airFrostLineChart.setTitle("Air Frost Days of " + stationName + " Station");
+        List<String> yearList = new ArrayList<>();
+        List<Integer> airFrostList = new ArrayList<>();
+        for (ProcessedStation station : processedStationData) {
+            if (station.getStationName().equals(stationName)) {
+                yearList.add(String.valueOf(station.getYear()));
+                airFrostList.add(station.getAirFrostDaySum());
+            }
+        }
+
+        XYChart.Series series7 = new XYChart.Series();
+        series7.setName("Air Frost Day");
+
+
+        for (int i = 0; i < yearList.size(); i++) {
+            series7.getData().add(new XYChart.Data(yearList.get(i), airFrostList.get(i)));
+        }
+        airFrostLineChart.getData().addAll(series7);
+    }
+
+    /**
+     * Display rainfall line chart.
+     *
+     * @param treeItem the tree item
+     */
+    private void displayRainfallLineChart(TreeItem<String> treeItem) {
+        clearLineChart(rainfallLineChart);
+        xAxis6.setLabel("Year");
+        yAxis6.setLabel("Rainfall");
+        String stationName = treeItem.getValue();
+        rainfallLineChart.setTitle("Rainfall of " + stationName + " Station");
+        List<String> yearList = new ArrayList<>();
+        List<Double> rainfallList = new ArrayList<>();
+        for (ProcessedStation station : processedStationData) {
+            if (station.getStationName().equals(stationName)) {
+                yearList.add(String.valueOf(station.getYear()));
+                rainfallList.add(station.getRainfallSum());
+            }
+        }
+
+        XYChart.Series series8 = new XYChart.Series();
+        series8.setName("Rainfall");
+
+        for (int i = 0; i < yearList.size(); i++) {
+            series8.getData().add(new XYChart.Data(yearList.get(i), rainfallList.get(i)));
+        }
+        rainfallLineChart.getData().addAll(series8);
+    }
+
+    /**
+     * Clear bar chart.
+     *
+     * @param chart the chart
+     */
+    private void clearBarChart(BarChart<String, Number> chart) {
+        ObservableList<XYChart.Series<String, Number>> allSeries = chart.getData();
+        for (XYChart.Series<String, Number> series : allSeries) {
+            for (XYChart.Data<String, Number> data : series.getData()) {
+                Node node = data.getNode();
+                Parent parent = node.parentProperty().get();
+                if (parent instanceof Group) {
+                    Group group = (Group) parent;
+                    group.getChildren().clear();
+                }
+            }
+        }
+        allSeries.clear();
+    }
+
+    /**
+     * Clear line chart.
+     *
+     * @param chart the chart
+     */
+    private void clearLineChart(LineChart<String, Number> chart) {
+        ObservableList<XYChart.Series<String, Number>> allSeries = chart.getData();
+        for (XYChart.Series<String, Number> series : allSeries) {
+            for (XYChart.Data<String, Number> data : series.getData()) {
+                Node node = data.getNode();
+                Parent parent = node.parentProperty().get();
+                if (parent instanceof Group) {
+                    Group group = (Group) parent;
+                    group.getChildren().clear();
+                }
+            }
+        }
+        allSeries.clear();
+    }
+}
