@@ -782,13 +782,13 @@ public class Controller implements Initializable {
         xAxis5.setLabel("Year");
         yAxis5.setLabel("Air Frost Day");
         String stationName = treeItem.getValue();
-        airFrostLineChart.setTitle("Air Frost Days of " + stationName + " Station");
+        airFrostLineChart.setTitle("Average Monthly Air Frost Days of " + stationName + " Station");
         List<String> yearList = new ArrayList<>();
         List<Integer> airFrostList = new ArrayList<>();
         for (ProcessedStation station : processedStationData) {
             if (station.getStationName().equals(stationName)) {
                 yearList.add(String.valueOf(station.getYear()));
-                airFrostList.add(station.getAirFrostDaySum());
+                airFrostList.add(station.getAirFrostDaySum() / station.getMonthCount());
             }
         }
 
@@ -812,13 +812,13 @@ public class Controller implements Initializable {
         xAxis6.setLabel("Year");
         yAxis6.setLabel("Rainfall");
         String stationName = treeItem.getValue();
-        rainfallLineChart.setTitle("Rainfall of " + stationName + " Station");
+        rainfallLineChart.setTitle("Average Monthly Rainfall of " + stationName + " Station");
         List<String> yearList = new ArrayList<>();
         List<Double> rainfallList = new ArrayList<>();
         for (ProcessedStation station : processedStationData) {
             if (station.getStationName().equals(stationName)) {
                 yearList.add(String.valueOf(station.getYear()));
-                rainfallList.add(station.getRainfallSum());
+                rainfallList.add(station.getRainfallSum() / station.getMonthCount());
             }
         }
 
