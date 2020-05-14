@@ -20,35 +20,45 @@ After clicking the "Select Folder" button, this directory will be selected by th
 
 Now the user could click the "Import & Display Data" button to import and display the data within the selected folder. A message box will pop up after the data is proceeded successfully.
 
-![image-20200510185636100](https://i.loli.net/2020/05/11/73x2PRTnbpNsuQK.png)
+![image-20200510200507191](https://i.loli.net/2020/05/12/eLutVNcFM7sSfAW.png)
 
 After closing this message box, the label showing the directory will reset to default and the annual weather data will be displayed in the TableView below. And since nothing is hard-coded in the application, it can read any amount of data files within a folder as long as they are in the correct format.
 
-![image-20200510200507191](https://i.loli.net/2020/05/11/Oi2s4WnPFJdHCla.png)
+![image-20200510220146502](https://i.loli.net/2020/05/12/QPM68ECAl7o4JOX.png)
+
+
 
 After the data is imported, the user can click the "Generate Report" button to generate a .txt report (report.txt located in the project folder) with the statistics of all the weather stations. (The processing for the empty or incomplete data files will be explained later)
 
 If the report is generated as expected, a message box will pop up as follows:
 
-![image-20200510220146502](https://i.loli.net/2020/05/11/f1tJUs7wb4x2caQ.png)
+![image-20200510185636100](https://i.loli.net/2020/05/12/Vpo5RFdtczeguDO.png)
+
+
 
 The format of the report is shown below:
 
-![image-20200510200800871](https://i.loli.net/2020/05/11/DqQ2sckPtFmRpB5.png)
+![image-20200510201424686](https://i.loli.net/2020/05/12/132M8abx7XO4Dpn.png)
+
+
 
 ##### 1.1.2 Error Handling
 
 If the user closes the directory chooser without choosing a directory, a message box will pop up as a reminder:
 
-![image-20200510201217670](https://i.loli.net/2020/05/11/DxhszvIOPekru94.png)
+![image-20200510200800871](https://i.loli.net/2020/05/12/X5A8cMPJFuzg4RQ.png)
+
+
 
 If the user clicks the "Import & Display Data" button without selecting a directory first, an error message box will pop up as follows:
 
-![image-20200510201321232](https://i.loli.net/2020/05/11/FGThuC84AlLnKQb.png)
+![image-20200510201217670](https://i.loli.net/2020/05/12/gEZjAv2B58IuzyT.png)
+
+
 
 Also, if the user clicks the "Generate Report" button without importing the data first, there would be an error message box popping up as follows:
 
-![image-20200510201424686](https://i.loli.net/2020/05/11/DfnJ4yQ7UpCMsHd.png)
+![image-20200510201321232](https://i.loli.net/2020/05/12/5C2NHTQjmxhJyka.png)
 
 If the user selects an empty folder and clicks the "Import & Display Data" button, an error message box will pop up as follows:
 
@@ -118,9 +128,7 @@ If the user clicks another station item, the previous charts will disappear and 
 
 The project is developed under Java JDK 11.0.6 with JavaFX SDK 11.0.2. It is made of two packages as shown below. Package "weather.view" contains all the essential components to construct a JavaFX GUI, while package "weather.model" contains three classes used for different data instantiation.
 
-![image-20200510204138848](README.assets/9xnmaqtZwYpl2zE.png)
-
-
+![image-20200510182841830.png](https://i.loli.net/2020/05/13/7sUrnKfN3JiIcRB.png)
 
 #### 2.1 Class Station
 
@@ -207,7 +215,7 @@ public void setAverageAnnualRainfall(double averageAnnualRainfall) {
 
 #### 2.4 Controller
 
-Class Controller contains all the method used by the widgets of the GUI. A few 
+Class Controller contains all the method used by the widgets of the GUI. A few typical components will be explained below.
 
 ##### 2.4.1 <u>DirectoryChooser (Novel Feature)</u>
 
@@ -341,8 +349,6 @@ public void start(Stage primaryStage) throws IOException {
 }
 ```
 
-MainLayout.fxml is constructed by SceneBuilder to design the layout of the GUI.
-
-material-fx.css is used for changing the style of the GUI widgets.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ted by SceneBuilder to design the layout of the GUI.
+"MainLayout.fxml" is constructed by SceneBuilder to design the layout of the GUI.
 
 material-fx.css is used for changing the style of the GUI widgets.
